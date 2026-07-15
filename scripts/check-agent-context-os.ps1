@@ -61,10 +61,30 @@ function Invoke-CheckScript {
     }
 }
 
+function Test-FilesEqual {
+    param(
+        [string]$ExpectedRelativePath,
+        [string]$ActualRelativePath
+    )
+
+    $ExpectedPath = Join-Path $Root $ExpectedRelativePath
+    $ActualPath = Join-Path $Root $ActualRelativePath
+    if (-not (Test-Path -LiteralPath $ExpectedPath -PathType Leaf) -or -not (Test-Path -LiteralPath $ActualPath -PathType Leaf)) {
+        return
+    }
+
+    $ExpectedContent = Get-Content -LiteralPath $ExpectedPath -Raw -Encoding UTF8
+    $ActualContent = Get-Content -LiteralPath $ActualPath -Raw -Encoding UTF8
+    if ($ExpectedContent -ne $ActualContent) {
+        Add-Issue "File '$ActualRelativePath' must match '$ExpectedRelativePath'"
+    }
+}
+
 $RequiredDirectories = @(
     "docs",
     "templates",
     "templates/project",
+    "templates/project/scripts",
     "templates/project/docs/agent",
     "templates/project/docs/agent/workflows",
     "templates/project/docs/agent/checklists",
@@ -99,6 +119,9 @@ $RequiredFiles = @(
     "docs/12-execution-gates.md",
     "docs/13-project-style-profile.md",
     "docs/14-retrieval-memory-store.md",
+    "docs/15-release-readiness-review.md",
+    "templates/project/.gitignore",
+    "templates/project/.gitattributes",
     "templates/project/AGENTS.md",
     "templates/project/docs/agent/00-index.md",
     "templates/project/docs/agent/01-project-overview.md",
@@ -111,6 +134,8 @@ $RequiredFiles = @(
     "templates/project/docs/agent/memory-store/memory-schema.json",
     "templates/project/docs/agent/memory-store/memories.jsonl",
     "templates/project/docs/agent/memory-store/retrieval-config.json",
+    "templates/project/scripts/check-project-memory-store.ps1",
+    "templates/project/scripts/check-agent-drift.ps1",
     "templates/project/docs/agent/legacy-docs.md",
     "templates/project/docs/agent/02-architecture.md",
     "templates/project/docs/agent/03-tech-stack.md",
@@ -175,6 +200,9 @@ Test-ContainsText "docs/12-execution-gates.md" "S0"
 Test-ContainsText "docs/12-execution-gates.md" "git_commit"
 Test-ContainsText "docs/13-project-style-profile.md" "style-profile.md"
 Test-ContainsText 'docs/14-retrieval-memory-store.md' 'memory-store'
+Test-ContainsText 'docs/15-release-readiness-review.md' 'RR-001'
+Test-ContainsText "templates/project/.gitattributes" "*.ps1 text eol=crlf"
+Test-ContainsText "templates/project/.gitignore" ".env"
 Test-ContainsText "templates/project/AGENTS.md" "docs/agent/00-index.md"
 Test-ContainsText "templates/project/AGENTS.md" "docs/agent/style-profile.md"
 Test-ContainsText "templates/project/AGENTS.md" "docs/agent/memory.md"
@@ -215,6 +243,10 @@ Test-ContainsText "templates/project/docs/agent/task-report-template.md" "pushed
 Test-ContainsText "templates/reports/plan-intake-report.md" "proposed"
 Test-ContainsText "scripts/check-agent-drift.ps1" "change_level:"
 Test-ContainsText 'scripts/check-project-memory-store.ps1' 'memory-schema.json'
+Test-ContainsText "templates/project/scripts/check-agent-drift.ps1" "change_level:"
+Test-ContainsText 'templates/project/scripts/check-project-memory-store.ps1' 'memory-schema.json'
+Test-FilesEqual "scripts/check-agent-drift.ps1" "templates/project/scripts/check-agent-drift.ps1"
+Test-FilesEqual "scripts/check-project-memory-store.ps1" "templates/project/scripts/check-project-memory-store.ps1"
 
 Invoke-CheckScript "scripts/check-project-memory-store.ps1" @("-StoreRoot", "templates/project/docs/agent/memory-store")
 

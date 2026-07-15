@@ -65,4 +65,6 @@
 
 - S0 必须说明不涉及业务规则、记忆回写、方案摄取和旧文档迁移。
 - S2/S3 必须维护或更新 `docs/agent/runtime/current-task.md`。
-- 代码修改后应运行项目约定的 drift 检查。
+- 启用 `docs/agent/memory-store/` 时，应运行 `scripts/check-project-memory-store.ps1`。
+- 代码、脚本或配置修改后应运行 `scripts/check-agent-drift.ps1`。
+- 无法运行项目检查脚本时，必须说明原因、替代验证方式和剩余风险。

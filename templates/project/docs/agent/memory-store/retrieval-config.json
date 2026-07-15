@@ -34,7 +34,7 @@
     "require_verification_after_days": 180
   },
   "privacy_rules": {
-    "forbidden_content": ["password", "secret", "token", "cookie", "private_key"],
+    "forbidden_content": ["password", "secret", "token", "cookie", "private_key", "密码", "密钥", "令牌", "私钥", "凭据"],
     "require_redaction_for_real_user_data": true
   }
 }

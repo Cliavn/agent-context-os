@@ -56,7 +56,9 @@ agent-context-os/
 │  ├─ 10-progressive-adoption.md
 │  ├─ 11-plan-intake.md
 │  ├─ 12-execution-gates.md
-│  └─ 13-project-style-profile.md
+│  ├─ 13-project-style-profile.md
+│  ├─ 14-retrieval-memory-store.md
+│  └─ 15-release-readiness-review.md
 ├─ templates/
 │  ├─ project/
 │  ├─ business/
@@ -84,10 +86,11 @@ agent-context-os/
 ## 快速接入：新项目
 
 1. 复制 `templates/project/` 到你的项目根目录。
-2. 替换模板中的 `<项目名>`、`<技术栈>`、`<模块名>` 和 `<验证命令>`。
-3. 按真实项目补齐 `docs/agent/modules/`、`docs/agent/memory.md` 和业务语义文档。
-4. 执行 `scripts/check-agent-context-os.ps1` 或项目内检查脚本。
-5. 后续所有 Agent 任务从项目根目录的 `AGENTS.md` 和 `docs/agent/00-index.md` 开始。
+2. 确认复制结果包含 `AGENTS.md`、`docs/agent/`、`scripts/`、`.gitattributes` 和 `.gitignore`。
+3. 替换模板中的 `<项目名>`、`<技术栈>`、`<模块名>` 和 `<验证命令>`。
+4. 按真实项目补齐 `docs/agent/modules/`、`docs/agent/memory.md` 和业务语义文档。
+5. 执行 `scripts/check-project-memory-store.ps1`；项目已使用 Git 时，再执行 `scripts/check-agent-drift.ps1`。
+6. 后续所有 Agent 任务从项目根目录的 `AGENTS.md` 和 `docs/agent/00-index.md` 开始。
 
 ## 快速接入：老项目
 
