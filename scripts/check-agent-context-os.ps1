@@ -169,7 +169,7 @@ Test-ContainsText "templates/project/docs/agent/change-levels.md" "S0"
 Test-ContainsText "templates/project/docs/agent/memory.md" "assumption"
 Test-ContainsText 'templates/project/docs/agent/memory-store/README.md' 'memories.jsonl'
 Test-ContainsText 'templates/project/docs/agent/memory-store/memory-schema.json' 'last_verified'
-Test-ContainsText 'templates/project/docs/agent/memory-store/memories.jsonl' 'mem-YYYYMMDD-001'
+Test-ContainsText 'templates/project/docs/agent/memory-store/memories.jsonl' 'mem-20260101-001'
 Test-ContainsText 'templates/project/docs/agent/memory-store/retrieval-config.json' 'default_status_filter'
 Test-ContainsText "templates/project/docs/agent/legacy-docs.md" "indexed"
 Test-ContainsText "templates/project/docs/agent/runtime/current-task.md" "change_level"

@@ -21,7 +21,8 @@ function Get-GitChangedFiles {
 
     $DiffArgs = @(
         @("diff", "--name-only", "HEAD", "--"),
-        @("diff", "--cached", "--name-only", "--")
+        @("diff", "--cached", "--name-only", "--"),
+        @("ls-files", "--others", "--exclude-standard")
     )
 
     foreach ($Args in $DiffArgs) {
@@ -34,7 +35,8 @@ function Get-GitChangedFiles {
             }
         }
         catch {
-            return @()
+            Add-Issue "Unable to inspect Git changed files with 'git $($Args -join ' ')': $($_.Exception.Message)"
+            return $null
         }
     }
 
@@ -59,6 +61,14 @@ function Test-IsCodePath {
 }
 
 $ChangedFiles = Get-GitChangedFiles
+
+if ($null -eq $ChangedFiles) {
+    Write-Host "Agent drift check failed:" -ForegroundColor Red
+    foreach ($Issue in $Issues) {
+        Write-Host " - $Issue" -ForegroundColor Red
+    }
+    exit 1
+}
 
 if ($ChangedFiles.Count -eq 0) {
     Write-Host "Agent drift check passed: no changed files."
