@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "default_status_filter": ["current", "draft"],
+  "exclude_status_by_default": ["assumption", "deprecated", "stale"],
+  "source_priority": [
+    "user_confirmed",
+    "code",
+    "test",
+    "doc",
+    "decision",
+    "task_report",
+    "issue",
+    "conversation_summary"
+  ],
+  "confidence_weight": {
+    "high": 3,
+    "medium": 2,
+    "low": 1
+  },
+  "retrieval_modes": {
+    "keyword": true,
+    "structured_filter": true,
+    "vector": "optional"
+  },
+  "task_profiles": {
+    "new_feature": ["business_rule", "interaction_rule", "architecture_rule", "decision"],
+    "bug_fix": ["known_issue", "implementation_note", "business_rule"],
+    "ui_change": ["interaction_rule", "business_rule", "project_fact"],
+    "database_or_api_change": ["architecture_rule", "implementation_note", "business_rule"],
+    "plan_intake": ["decision", "open_question", "project_fact", "business_rule"]
+  },
+  "staleness_policy": {
+    "warn_after_days": 90,
+    "require_verification_after_days": 180
+  },
+  "privacy_rules": {
+    "forbidden_content": ["password", "secret", "token", "cookie", "private_key"],
+    "require_redaction_for_real_user_data": true
+  }
+}
