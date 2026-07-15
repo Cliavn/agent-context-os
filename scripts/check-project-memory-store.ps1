@@ -27,6 +27,15 @@ function Add-Issue {
     $Issues.Add($Message) | Out-Null
 }
 
+$MemoryIdPattern = "^mem-[0-9]{8}-[0-9]{3}$"
+$DatePattern = "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+$RequiredRecordFields = @("id", "status", "type", "scope", "summary", "content", "source", "confidence", "last_verified")
+$AllowedRecordFields = @("id", "status", "type", "scope", "summary", "content", "source", "evidence", "confidence", "last_verified", "tags", "replaces", "replaced_by")
+$StatusValues = @("current", "draft", "assumption", "deprecated", "stale")
+$TypeValues = @("project_fact", "business_rule", "interaction_rule", "architecture_rule", "implementation_note", "known_issue", "decision", "open_question")
+$SourceKindValues = @("user_confirmed", "code", "test", "doc", "decision", "task_report", "issue", "conversation_summary")
+$ConfidenceValues = @("high", "medium", "low")
+
 function Test-StoreFile {
     param([string]$Name)
     $Path = Join-Path $StoreRoot $Name
@@ -99,6 +108,29 @@ function Test-StringPattern {
     }
 }
 
+function Test-Boolean {
+    param(
+        [object]$Value,
+        [string]$Path
+    )
+
+    if ($Value -isnot [bool]) {
+        Add-Issue "$Path must be a boolean"
+    }
+}
+
+function Test-PositiveNumber {
+    param(
+        [object]$Value,
+        [string]$Path
+    )
+
+    $IsNumber = $Value -is [int] -or $Value -is [long] -or $Value -is [double] -or $Value -is [decimal]
+    if (-not $IsNumber -or $Value -le 0) {
+        Add-Issue "$Path must be a positive number"
+    }
+}
+
 function Test-StringArray {
     param(
         [object]$Value,
@@ -121,6 +153,158 @@ function Test-StringArray {
     }
 }
 
+function Test-StringEnumArray {
+    param(
+        [object]$Value,
+        [string[]]$AllowedValues,
+        [string]$Path,
+        [bool]$RequireItems
+    )
+
+    if ($Value -isnot [array]) {
+        Add-Issue "$Path must be an array"
+        return
+    }
+
+    if ($RequireItems -and $Value.Count -lt 1) {
+        Add-Issue "$Path must contain at least one item"
+        return
+    }
+
+    for ($Index = 0; $Index -lt $Value.Count; $Index += 1) {
+        Test-StringEnum $Value[$Index] $AllowedValues "$Path[$Index]"
+    }
+}
+
+function Test-ContainsAll {
+    param(
+        [object]$ActualValues,
+        [string[]]$ExpectedValues,
+        [string]$Path
+    )
+
+    foreach ($ExpectedValue in $ExpectedValues) {
+        if ($ActualValues -notcontains $ExpectedValue) {
+            Add-Issue "$Path must include '$ExpectedValue'"
+        }
+    }
+}
+
+function Test-MemorySchema {
+    param([object]$Schema)
+
+    Test-ContainsAll $Schema.required $RequiredRecordFields "memory-schema.json.required"
+
+    if ($Schema.additionalProperties -ne $false) {
+        Add-Issue "memory-schema.json must set additionalProperties to false"
+    }
+
+    if ($Schema.properties.id.pattern -ne $MemoryIdPattern) {
+        Add-Issue "memory-schema.json id pattern must be $MemoryIdPattern"
+    }
+    Test-ContainsAll $Schema.properties.status.enum $StatusValues "memory-schema.json.status.enum"
+    Test-ContainsAll $Schema.properties.type.enum $TypeValues "memory-schema.json.type.enum"
+    Test-ContainsAll $Schema.properties.source.required @("kind", "ref", "date") "memory-schema.json.source.required"
+    Test-ContainsAll $Schema.properties.source.properties.kind.enum $SourceKindValues "memory-schema.json.source.kind.enum"
+    Test-ContainsAll $Schema.properties.confidence.enum $ConfidenceValues "memory-schema.json.confidence.enum"
+
+    if ($Schema.properties.source.properties.date.pattern -ne $DatePattern) {
+        Add-Issue "memory-schema.json source.date pattern must be $DatePattern"
+    }
+    if ($Schema.properties.last_verified.pattern -ne $DatePattern) {
+        Add-Issue "memory-schema.json last_verified pattern must be $DatePattern"
+    }
+}
+
+function Test-RetrievalConfig {
+    param([object]$Config)
+
+    $RequiredConfigFields = @("version", "default_status_filter", "exclude_status_by_default", "source_priority", "confidence_weight", "retrieval_modes", "task_profiles", "staleness_policy", "privacy_rules")
+    Test-ObjectProperties $Config $RequiredConfigFields "retrieval-config.json"
+    foreach ($RequiredConfigField in $RequiredConfigFields) {
+        [void](Test-RequiredProperty $Config $RequiredConfigField "retrieval-config.json")
+    }
+
+    Test-PositiveNumber $Config.version "retrieval-config.json.version"
+    Test-StringEnumArray $Config.default_status_filter $StatusValues "retrieval-config.json.default_status_filter" $true
+    Test-StringEnumArray $Config.exclude_status_by_default $StatusValues "retrieval-config.json.exclude_status_by_default" $true
+
+    if ($Config.default_status_filter -notcontains "current") {
+        Add-Issue "retrieval-config.json must include current in default_status_filter"
+    }
+    if ($Config.exclude_status_by_default -notcontains "stale") {
+        Add-Issue "retrieval-config.json must exclude stale memories by default"
+    }
+    foreach ($Status in $StatusValues) {
+        if ($Config.default_status_filter -contains $Status -and $Config.exclude_status_by_default -contains $Status) {
+            Add-Issue "retrieval-config.json status '$Status' cannot be both included and excluded by default"
+        }
+    }
+
+    Test-StringEnumArray $Config.source_priority $SourceKindValues "retrieval-config.json.source_priority" $true
+
+    if ($Config.confidence_weight -isnot [pscustomobject]) {
+        Add-Issue "retrieval-config.json.confidence_weight must be an object"
+    }
+    else {
+        Test-ObjectProperties $Config.confidence_weight $ConfidenceValues "retrieval-config.json.confidence_weight"
+        foreach ($Confidence in $ConfidenceValues) {
+            if (Test-RequiredProperty $Config.confidence_weight $Confidence "retrieval-config.json.confidence_weight") {
+                Test-PositiveNumber $Config.confidence_weight.$Confidence "retrieval-config.json.confidence_weight.$Confidence"
+            }
+        }
+    }
+
+    if ($Config.retrieval_modes -isnot [pscustomobject]) {
+        Add-Issue "retrieval-config.json.retrieval_modes must be an object"
+    }
+    else {
+        Test-ObjectProperties $Config.retrieval_modes @("keyword", "structured_filter", "vector") "retrieval-config.json.retrieval_modes"
+        foreach ($Mode in @("keyword", "structured_filter")) {
+            if (Test-RequiredProperty $Config.retrieval_modes $Mode "retrieval-config.json.retrieval_modes") {
+                Test-Boolean $Config.retrieval_modes.$Mode "retrieval-config.json.retrieval_modes.$Mode"
+            }
+        }
+        if ($null -ne $Config.retrieval_modes.vector) {
+            Test-NonEmptyString $Config.retrieval_modes.vector "retrieval-config.json.retrieval_modes.vector"
+        }
+    }
+
+    if ($Config.task_profiles -isnot [pscustomobject]) {
+        Add-Issue "retrieval-config.json.task_profiles must be an object"
+    }
+    else {
+        foreach ($Profile in $Config.task_profiles.PSObject.Properties) {
+            Test-StringEnumArray $Profile.Value $TypeValues "retrieval-config.json.task_profiles.$($Profile.Name)" $true
+        }
+    }
+
+    if ($Config.staleness_policy -isnot [pscustomobject]) {
+        Add-Issue "retrieval-config.json.staleness_policy must be an object"
+    }
+    else {
+        foreach ($Field in @("warn_after_days", "require_verification_after_days")) {
+            if (Test-RequiredProperty $Config.staleness_policy $Field "retrieval-config.json.staleness_policy") {
+                Test-PositiveNumber $Config.staleness_policy.$Field "retrieval-config.json.staleness_policy.$Field"
+            }
+        }
+        if ($null -ne $Config.staleness_policy.warn_after_days -and $null -ne $Config.staleness_policy.require_verification_after_days -and $Config.staleness_policy.require_verification_after_days -lt $Config.staleness_policy.warn_after_days) {
+            Add-Issue "retrieval-config.json.staleness_policy.require_verification_after_days must be greater than or equal to warn_after_days"
+        }
+    }
+
+    if ($Config.privacy_rules -isnot [pscustomobject]) {
+        Add-Issue "retrieval-config.json.privacy_rules must be an object"
+    }
+    else {
+        foreach ($Field in @("forbidden_content", "require_redaction_for_real_user_data")) {
+            [void](Test-RequiredProperty $Config.privacy_rules $Field "retrieval-config.json.privacy_rules")
+        }
+        Test-StringArray $Config.privacy_rules.forbidden_content "retrieval-config.json.privacy_rules.forbidden_content" $true
+        Test-Boolean $Config.privacy_rules.require_redaction_for_real_user_data "retrieval-config.json.privacy_rules.require_redaction_for_real_user_data"
+    }
+}
+
 function Test-MemoryRecord {
     param(
         [object]$Record,
@@ -128,27 +312,21 @@ function Test-MemoryRecord {
     )
 
     $RecordPath = "memories.jsonl line $LineNumber"
-    $RequiredFields = @("id", "status", "type", "scope", "summary", "content", "source", "confidence", "last_verified")
-    $AllowedFields = @("id", "status", "type", "scope", "summary", "content", "source", "evidence", "confidence", "last_verified", "tags", "replaces", "replaced_by")
-    $StatusValues = @("current", "draft", "assumption", "deprecated", "stale")
-    $TypeValues = @("project_fact", "business_rule", "interaction_rule", "architecture_rule", "implementation_note", "known_issue", "decision", "open_question")
-    $SourceKindValues = @("user_confirmed", "code", "test", "doc", "decision", "task_report", "issue", "conversation_summary")
-    $ConfidenceValues = @("high", "medium", "low")
 
-    Test-ObjectProperties $Record $AllowedFields $RecordPath
+    Test-ObjectProperties $Record $AllowedRecordFields $RecordPath
 
-    foreach ($RequiredField in $RequiredFields) {
+    foreach ($RequiredField in $RequiredRecordFields) {
         [void](Test-RequiredProperty $Record $RequiredField $RecordPath)
     }
 
-    Test-StringPattern $Record.id "^mem-[0-9]{8}-[0-9]{3}$" "$RecordPath.id"
+    Test-StringPattern $Record.id $MemoryIdPattern "$RecordPath.id"
     Test-StringEnum $Record.status $StatusValues "$RecordPath.status"
     Test-StringEnum $Record.type $TypeValues "$RecordPath.type"
     Test-StringArray $Record.scope "$RecordPath.scope" $true
     Test-NonEmptyString $Record.summary "$RecordPath.summary"
     Test-NonEmptyString $Record.content "$RecordPath.content"
     Test-StringEnum $Record.confidence $ConfidenceValues "$RecordPath.confidence"
-    Test-StringPattern $Record.last_verified "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" "$RecordPath.last_verified"
+    Test-StringPattern $Record.last_verified $DatePattern "$RecordPath.last_verified"
 
     if ($null -ne $Record.source) {
         if ($Record.source -isnot [pscustomobject]) {
@@ -161,7 +339,7 @@ function Test-MemoryRecord {
             }
             Test-StringEnum $Record.source.kind $SourceKindValues "$RecordPath.source.kind"
             Test-NonEmptyString $Record.source.ref "$RecordPath.source.ref"
-            Test-StringPattern $Record.source.date "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" "$RecordPath.source.date"
+            Test-StringPattern $Record.source.date $DatePattern "$RecordPath.source.date"
         }
     }
 
@@ -192,11 +370,7 @@ $SchemaPath = Join-Path $StoreRoot "memory-schema.json"
 if (Test-Path -LiteralPath $SchemaPath -PathType Leaf) {
     try {
         $Schema = Get-Content -LiteralPath $SchemaPath -Raw -Encoding UTF8 | ConvertFrom-Json
-        foreach ($RequiredField in @("id", "status", "type", "scope", "summary", "content", "source", "confidence", "last_verified")) {
-            if ($Schema.required -notcontains $RequiredField) {
-                Add-Issue "memory-schema.json does not require '$RequiredField'"
-            }
-        }
+        Test-MemorySchema $Schema
     }
     catch {
         Add-Issue "memory-schema.json is not valid JSON: $($_.Exception.Message)"
@@ -207,12 +381,7 @@ $ConfigPath = Join-Path $StoreRoot "retrieval-config.json"
 if (Test-Path -LiteralPath $ConfigPath -PathType Leaf) {
     try {
         $Config = Get-Content -LiteralPath $ConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
-        if ($Config.default_status_filter -notcontains "current") {
-            Add-Issue "retrieval-config.json must include current in default_status_filter"
-        }
-        if ($Config.exclude_status_by_default -notcontains "stale") {
-            Add-Issue "retrieval-config.json must exclude stale memories by default"
-        }
+        Test-RetrievalConfig $Config
     }
     catch {
         Add-Issue "retrieval-config.json is not valid JSON: $($_.Exception.Message)"
