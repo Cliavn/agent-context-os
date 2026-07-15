@@ -36,8 +36,28 @@ function Test-ContainsText {
     }
 
     $Content = Get-Content -LiteralPath $Path -Raw -Encoding UTF8
-    if ($Content -notlike "*$ExpectedText*") {
+    if (-not $Content.Contains($ExpectedText)) {
         Add-Issue "File '$RelativePath' does not reference '$ExpectedText'"
+    }
+}
+
+function Invoke-CheckScript {
+    param(
+        [string]$RelativePath,
+        [string[]]$Arguments = @()
+    )
+
+    $Path = Join-Path $Root $RelativePath
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
+        return
+    }
+
+    $Output = & powershell -NoProfile -ExecutionPolicy Bypass -File $Path @Arguments 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Add-Issue "Check script failed: $RelativePath"
+        foreach ($Line in $Output) {
+            Add-Issue "  $Line"
+        }
     }
 }
 
@@ -63,6 +83,7 @@ $RequiredFiles = @(
     "AGENTS.md",
     "LICENSE",
     ".gitignore",
+    ".gitattributes",
     "docs/00-system-overview.md",
     "docs/01-context-routing.md",
     "docs/02-business-modeling.md",
@@ -142,6 +163,7 @@ foreach ($File in $RequiredFiles) {
 
 Test-ContainsText "README.md" "Agent Context OS"
 Test-ContainsText "AGENTS.md" "Agent Context OS"
+Test-ContainsText ".gitattributes" "*.ps1 text eol=crlf"
 Test-ContainsText "docs/01-context-routing.md" "Token"
 Test-ContainsText "docs/02-business-modeling.md" "Agent"
 Test-ContainsText "docs/07-token-budget.md" "Agent"
@@ -193,6 +215,8 @@ Test-ContainsText "templates/project/docs/agent/task-report-template.md" "pushed
 Test-ContainsText "templates/reports/plan-intake-report.md" "proposed"
 Test-ContainsText "scripts/check-agent-drift.ps1" "change_level:"
 Test-ContainsText 'scripts/check-project-memory-store.ps1' 'memory-schema.json'
+
+Invoke-CheckScript "scripts/check-project-memory-store.ps1" @("-StoreRoot", "templates/project/docs/agent/memory-store")
 
 if ($Issues.Count -gt 0) {
     Write-Host 'Agent Context OS check failed:' -ForegroundColor Red
