@@ -69,6 +69,14 @@
 - 系统影响矩阵：`<无 / 摘要或路径>`
 - 开放问题：`<无 / 待确认问题>`
 
+## 方案落实台账
+
+- 台账路径：`<无 / docs/agent/plans/plan-id.md>`
+- 台账状态：`<无 / draft / confirmed / active / done / superseded>`
+- 本轮任务：`<无 / T1, T2>`
+- 任务统计：`<总数 / 已完成 / 阻塞 / 延期 / 未开始>`
+- 无说明 pending：`<无 / 任务 ID>`
+
 ## 执行门禁
 
 - current-task：`<未使用 / 已更新 / 已归档>`

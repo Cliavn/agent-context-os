@@ -90,6 +90,7 @@ $RequiredDirectories = @(
     "templates/project/docs/agent/checklists",
     "templates/project/docs/agent/modules",
     "templates/project/docs/agent/memory-store",
+    "templates/project/docs/agent/plans",
     "templates/project/docs/agent/runtime",
     "templates/business",
     "templates/modules",
@@ -120,6 +121,7 @@ $RequiredFiles = @(
     "docs/13-project-style-profile.md",
     "docs/14-retrieval-memory-store.md",
     "docs/15-release-readiness-review.md",
+    "docs/16-plan-execution-ledger.md",
     "templates/project/.gitignore",
     "templates/project/.gitattributes",
     "templates/project/AGENTS.md",
@@ -134,6 +136,8 @@ $RequiredFiles = @(
     "templates/project/docs/agent/memory-store/memory-schema.json",
     "templates/project/docs/agent/memory-store/memories.jsonl",
     "templates/project/docs/agent/memory-store/retrieval-config.json",
+    "templates/project/docs/agent/plans/README.md",
+    "templates/project/docs/agent/plans/_template.md",
     "templates/project/scripts/check-project-memory-store.ps1",
     "templates/project/scripts/check-agent-drift.ps1",
     "templates/project/docs/agent/legacy-docs.md",
@@ -203,6 +207,8 @@ Test-ContainsText "docs/12-execution-gates.md" "git_commit"
 Test-ContainsText "docs/13-project-style-profile.md" "style-profile.md"
 Test-ContainsText 'docs/14-retrieval-memory-store.md' 'memory-store'
 Test-ContainsText 'docs/15-release-readiness-review.md' 'RR-001'
+Test-ContainsText 'docs/16-plan-execution-ledger.md' 'confirmed'
+Test-ContainsText 'docs/16-plan-execution-ledger.md' 'plan-id'
 Test-ContainsText "templates/project/.gitattributes" "*.ps1 text eol=crlf"
 Test-ContainsText "templates/project/.gitignore" ".env"
 Test-ContainsText "templates/project/AGENTS.md" "docs/agent/00-index.md"
@@ -214,7 +220,9 @@ Test-ContainsText "templates/project/AGENTS.md" "docs/agent/intake.md"
 Test-ContainsText "templates/project/AGENTS.md" "S0"
 Test-ContainsText "templates/project/AGENTS.md" "Git"
 Test-ContainsText "templates/project/AGENTS.md" "discussion_only"
+Test-ContainsText "templates/project/AGENTS.md" "docs/agent/plans"
 Test-ContainsText "templates/project/docs/agent/00-index.md" "workflow"
+Test-ContainsText "templates/project/docs/agent/00-index.md" "plans/README.md"
 Test-ContainsText "templates/project/docs/agent/style-profile.md" "current"
 Test-ContainsText "templates/project/docs/agent/adoption.md" "progressive"
 Test-ContainsText "templates/project/docs/agent/intake.md" "plan-id"
@@ -224,32 +232,43 @@ Test-ContainsText 'templates/project/docs/agent/memory-store/README.md' 'memorie
 Test-ContainsText 'templates/project/docs/agent/memory-store/memory-schema.json' 'last_verified'
 Test-ContainsText 'templates/project/docs/agent/memory-store/memories.jsonl' 'mem-20260101-001'
 Test-ContainsText 'templates/project/docs/agent/memory-store/retrieval-config.json' 'default_status_filter'
+Test-ContainsText 'templates/project/docs/agent/plans/README.md' 'confirmed'
+Test-ContainsText 'templates/project/docs/agent/plans/_template.md' 'plan-id'
+Test-ContainsText 'templates/project/docs/agent/plans/_template.md' 'T1'
 Test-ContainsText "templates/project/docs/agent/legacy-docs.md" "indexed"
 Test-ContainsText "templates/project/docs/agent/runtime/current-task.md" "change_level"
 Test-ContainsText 'templates/project/docs/agent/runtime/current-task.md' 'retrieval_memory'
 Test-ContainsText "templates/project/docs/agent/runtime/current-task.md" "style_profile"
+Test-ContainsText "templates/project/docs/agent/runtime/current-task.md" "plan_ledger"
 Test-ContainsText 'templates/project/docs/agent/runtime/current-task.md' 'git_commit'
 Test-ContainsText 'templates/project/docs/agent/runtime/current-task.md' 'pushed'
 Test-ContainsText "templates/project/docs/agent/workflows/progressive-adoption.md" "Agent Context Engine"
 Test-ContainsText "templates/project/docs/agent/workflows/plan-intake.md" "current"
 Test-ContainsText "templates/project/docs/agent/workflows/plan-intake.md" "discussion_only"
+Test-ContainsText "templates/project/docs/agent/workflows/plan-intake.md" "plans/<plan-id>.md"
 Test-ContainsText "templates/project/docs/agent/workflows/execution-gate.md" "S0"
 Test-ContainsText "templates/project/docs/agent/workflows/execution-gate.md" "discussion_only"
+Test-ContainsText "templates/project/docs/agent/workflows/execution-gate.md" "confirmed"
 Test-ContainsText "templates/project/docs/agent/checklists/adoption-checklist.md" "legacy-docs.md"
 Test-ContainsText "templates/project/docs/agent/checklists/plan-intake-checklist.md" "conflict"
 Test-ContainsText "templates/project/docs/agent/checklists/plan-intake-checklist.md" "discussion_only"
+Test-ContainsText "templates/project/docs/agent/checklists/plan-intake-checklist.md" "plans/<plan-id>.md"
 Test-ContainsText "templates/project/docs/agent/checklists/execution-gate-checklist.md" "current-task.md"
 Test-ContainsText "templates/project/docs/agent/checklists/version-control-checklist.md" "Git"
 Test-ContainsText "templates/business/field-rules.md" "field_name"
 Test-ContainsText "templates/reports/implementation-spec.md" "docs/agent/memory.md"
+Test-ContainsText "templates/reports/implementation-spec.md" "plan-id.md"
 Test-ContainsText "templates/reports/task-report.md" "docs/agent/memory.md"
 Test-ContainsText 'templates/reports/task-report.md' 'memory-store'
 Test-ContainsText "templates/reports/task-report.md" "Git"
 Test-ContainsText "templates/project/docs/agent/task-report-template.md" "pushed"
 Test-ContainsText "templates/reports/plan-intake-report.md" "proposed"
+Test-ContainsText "templates/reports/plan-intake-report.md" "T1"
 Test-ContainsText "scripts/check-agent-drift.ps1" "change_level:"
+Test-ContainsText "scripts/check-agent-drift.ps1" "plan_ledger:"
 Test-ContainsText 'scripts/check-project-memory-store.ps1' 'memory-schema.json'
 Test-ContainsText "templates/project/scripts/check-agent-drift.ps1" "change_level:"
+Test-ContainsText "templates/project/scripts/check-agent-drift.ps1" "plan_ledger:"
 Test-ContainsText 'templates/project/scripts/check-project-memory-store.ps1' 'memory-schema.json'
 Test-FilesEqual "scripts/check-agent-drift.ps1" "templates/project/scripts/check-agent-drift.ps1"
 Test-FilesEqual "scripts/check-project-memory-store.ps1" "templates/project/scripts/check-project-memory-store.ps1"

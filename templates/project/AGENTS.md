@@ -9,14 +9,15 @@
 3. `docs/agent/style-profile.md`
 4. `docs/agent/adoption.md`
 5. `docs/agent/intake.md`
-6. `docs/agent/change-levels.md`
-7. `docs/agent/memory-store/README.md`（如已启用检索式记忆）
-8. `docs/agent/memory.md`
-9. `docs/agent/02-architecture.md`
-10. `docs/agent/03-tech-stack.md`
-11. `docs/agent/quality.md`
-12. 与任务类型对应的 workflow 和 checklist
-13. 与修改范围对应的模块文档
+6. `docs/agent/plans/README.md`
+7. `docs/agent/change-levels.md`
+8. `docs/agent/memory-store/README.md`（如已启用检索式记忆）
+9. `docs/agent/memory.md`
+10. `docs/agent/02-architecture.md`
+11. `docs/agent/03-tech-stack.md`
+12. `docs/agent/quality.md`
+13. 与任务类型对应的 workflow 和 checklist
+14. 与修改范围对应的模块文档
 
 ## 硬规则
 
@@ -30,6 +31,8 @@
 - 老项目渐进式接入时，只能先建立旧文档索引，不得默认全量分析旧文档。
 - 用户输入完整方案时，必须先理解方案初衷、业务意义和系统影响，再拆任务或写回上下文。
 - 用户仅在讨论、比较或推敲方案且未明确要求定版、执行或写回时，视为 `discussion_only`，不得修改协作文档；只能在对话中整理候选方案、风险和待确认问题。
+- 用户要求形成开发顺序、任务清单、记录草稿或准备落地时，必须创建或更新 `docs/agent/plans/<plan-id>.md`，初始状态为 `draft`。
+- 用户要求按完整方案开发时，必须读取 `confirmed` 或 `active` 方案落实台账，并按任务顺序逐项执行；不得按零散对话直接实现。
 - 修改前必须判断变更等级：`S0`、`S1`、`S2` 或 `S3`。
 - `S0` 微小变更可以走轻量模式，但必须说明不涉及业务规则、记忆回写、方案摄取和旧文档迁移。
 - `S2` / `S3` 必须维护或更新 `docs/agent/runtime/current-task.md`。
@@ -53,7 +56,8 @@
 - 默认按任务路由读取最小必要上下文。
 - 默认先检索记忆摘要，再按命中结果深读文档。
 - 不默认全量读取历史文档。
-- 多 Agent 仅在复杂跨模块任务中启用，并需要明确职责边界。
+- 完整方案开发时优先以方案落实台账组织多 Agent；任务很少、强串行或用户要求单 Agent 时可不启用，但必须说明原因。
+- 多 Agent 仅在复杂跨模块任务或完整方案落地中启用，并需要明确职责边界。
 
 ## 最终报告
 
@@ -66,6 +70,7 @@
 - 检索记忆更新
 - 渐进式接入状态
 - 方案摄取状态
+- 方案落实台账
 - 验证结果
 - 本地 Git 提交
 - 是否推送

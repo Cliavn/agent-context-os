@@ -10,16 +10,17 @@
 4. `docs/agent/style-profile.md`
 5. `docs/agent/adoption.md`
 6. `docs/agent/intake.md`
-7. `docs/agent/change-levels.md`
-8. `docs/agent/memory-store/README.md`（如已启用检索式记忆）
-9. `docs/agent/memory.md`
-10. `docs/agent/02-architecture.md`
-11. `docs/agent/03-tech-stack.md`
-12. `docs/agent/quality.md`
-13. `docs/agent/review.md`
-14. 按任务类型阅读 `workflows/`
-15. 按修改范围阅读 `modules/`
-16. 涉及架构取舍时阅读 `04-decisions.md`
+7. `docs/agent/plans/README.md`
+8. `docs/agent/change-levels.md`
+9. `docs/agent/memory-store/README.md`（如已启用检索式记忆）
+10. `docs/agent/memory.md`
+11. `docs/agent/02-architecture.md`
+12. `docs/agent/03-tech-stack.md`
+13. `docs/agent/quality.md`
+14. `docs/agent/review.md`
+15. 按任务类型阅读 `workflows/`
+16. 按修改范围阅读 `modules/`
+17. 涉及架构取舍时阅读 `04-decisions.md`
 
 ## 任务路由
 
@@ -27,6 +28,8 @@
 |---|---|
 | 渐进式接入 | `workflows/progressive-adoption.md`、`checklists/adoption-checklist.md`、`adoption.md`、`legacy-docs.md` |
 | 方案理解与摄取 | `workflows/plan-intake.md`、`checklists/plan-intake-checklist.md`、`intake.md`、`memory.md` |
+| 方案落实台账 | `workflows/plan-intake.md`、`checklists/plan-intake-checklist.md`、`intake.md`、`plans/README.md`、`plans/<plan-id>.md` |
+| 完整方案开发 | `plans/<plan-id>.md`、`workflows/new-feature.md`、`checklists/new-feature-checklist.md`、`checklists/execution-gate-checklist.md`、相关模块和业务文档 |
 | S0 微小变更 | `change-levels.md`、相关代码或样式文件、最小验证 |
 | 新增功能 | `workflows/new-feature.md`、`checklists/new-feature-checklist.md`、检索相关业务和架构记忆、相关模块文档 |
 | 修复 Bug | `workflows/bug-fix.md`、`checklists/bug-fix-checklist.md`、检索历史问题和实现记忆、历史问题库 |
@@ -51,5 +54,7 @@
 - 旧文档首次接入只进入 `legacy-docs.md` 索引，不默认作为当前事实。
 - 仅讨论、比较或推敲中的方案不得写回协作文档；用户明确要求定版、执行、记录草案或写回后，完整方案才进入 `intake.md`。
 - 进入 `intake.md` 的方案必须拆分为意图、业务意义、实现逻辑、系统影响和融合更新。
+- 用户要求形成开发顺序、任务清单、记录草稿或准备落地时，创建或更新 `plans/<plan-id>.md`。
+- `draft` 台账不得作为实现依据；完整方案开发必须读取 `confirmed` 或 `active` 台账并逐项执行。
 - 历史文档只做回溯，不作为当前实现依据。
 - 文档应短而可执行，优先写边界、流程、接口和验收标准。
