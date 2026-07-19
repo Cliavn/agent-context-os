@@ -26,6 +26,7 @@
 | RR-009 | 主检查未防止模板脚本和根脚本漂移 | 根脚本修复后，模板脚本可能遗留旧逻辑 | 已修复：根检查脚本校验模板脚本内容必须一致 |
 | RR-010 | `templates/project/` 未包含 `.gitattributes` 和 `.gitignore` | 用户初始化 Git 后可能出现换行噪声，或误提交环境变量、日志和构建产物 | 已修复：模板项目包含基础 Git 文件并纳入根检查 |
 | RR-011 | drift 检查返回空 Git 改动集合时不稳定 | 干净项目可能误报失败，且没有清晰错误原因 | 已修复：显式返回字符串数组 |
+| RR-012 | 多个检查脚本分散，任务收尾时容易漏跑 worktree、drift 或空白检查 | 关键协作链路只靠 Agent 自觉，可能在改动后未进行完整强检查 | 已修复：新增 `scripts/check-agent-strong.ps1` 聚合强检查矩阵，并由模板和质量门禁引用 |
 
 ## 剩余边界
 
@@ -35,9 +36,11 @@
 
 ## 发版前验证清单
 
-- 运行 `scripts/check-agent-context-os.ps1`。
-- 运行 `scripts/check-project-memory-store.ps1`。
-- 运行 `scripts/check-agent-drift.ps1`。
+- 优先运行 `scripts/check-agent-strong.ps1`。
+- 必要时单独运行 `scripts/check-agent-context-os.ps1`。
+- 必要时单独运行 `scripts/check-project-memory-store.ps1`。
+- 必要时单独运行 `scripts/check-agent-worktrees.ps1`。
+- 必要时单独运行 `scripts/check-agent-drift.ps1`。
 - 对 memory-store、retrieval-config、schema、drift 进行负向验证。
 - 扫描敏感信息和危险命令。
 - 检查 `.ps1` 换行符合 `.gitattributes`。

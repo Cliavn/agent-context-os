@@ -39,7 +39,7 @@ Agent 应按以下顺序加载上下文：
 | UI 改造 | UI workflow、项目风格画像、相关页面模块卡片 |
 | 端侧风格或工程习惯调整 | 项目风格画像、相关模块卡片、必要的业务或架构文档 |
 | 数据库变更 | storage 模块卡片、migration 规则、回滚方案 |
-| 发布或提交 | version-control workflow、发布 checklist |
+| 发布或提交 | version-control workflow、发布 checklist、强检查矩阵 |
 | 多任务并行开发准备 | 变更分级、parallel-worktree workflow、parallel-worktree checklist、version-control workflow |
 
 ## 过期文档处理

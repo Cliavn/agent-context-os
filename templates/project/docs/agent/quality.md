@@ -78,4 +78,23 @@
 - S2/S3 必须维护或更新 `docs/agent/runtime/current-task.md`。
 - 启用 `docs/agent/memory-store/` 时，应运行 `scripts/check-project-memory-store.ps1`。
 - 代码、脚本或配置修改后应运行 `scripts/check-agent-drift.ps1`。
+- 代码、脚本、模板或协作文档修改后应运行强检查矩阵；优先使用 `scripts/check-agent-strong.ps1`。
 - 无法运行项目检查脚本时，必须说明原因、替代验证方式和剩余风险。
+
+## 强检查矩阵
+
+任务收尾时优先运行：
+
+```powershell
+scripts/check-agent-strong.ps1
+```
+
+强检查至少覆盖：
+
+- `git diff --check`：检查未暂存差异中的空白错误。
+- `git diff --cached --check`：检查已暂存差异中的空白错误。
+- `scripts/check-project-memory-store.ps1`：检查检索式项目记忆结构。
+- `scripts/check-agent-worktrees.ps1`：检查 Git worktree（工作树）残留和嵌套风险。
+- `scripts/check-agent-drift.ps1`：检查代码类变更是否留下任务状态和文档同步痕迹。
+
+如果某个检查不适用于当前项目，最终报告必须说明跳过原因；如果检查失败，不得宣称交付完成，除非用户明确接受失败状态和剩余风险。

@@ -46,6 +46,7 @@
 - 启用 `docs/agent/memory-store/` 时，必须运行 `scripts/check-project-memory-store.ps1` 或说明无法运行原因。
 - 代码、脚本或配置修改后，应运行 `scripts/check-agent-drift.ps1` 或说明无法运行原因。
 - 创建、使用或清理 Git worktree 后，应运行 `scripts/check-agent-worktrees.ps1` 或说明无法运行原因。
+- 每次代码、脚本、模板或协作文档改动后，必须运行强检查矩阵；优先执行 `scripts/check-agent-strong.ps1`，并在最终回复中说明通过、失败或跳过原因。
 - 完成代码修改并通过必要验证后，默认创建本地 Git 提交。
 - 本地提交只能包含本次 Agent 改动；工作区存在用户已有未提交改动时，必须只暂存本次相关文件，无法安全区分时不得提交。
 - 不得在未获得用户明确授权时推送到远端仓库。
@@ -79,6 +80,7 @@
 - 方案摄取状态
 - 方案落实台账
 - 验证结果
+- 强检查结果
 - 本地 Git 提交
 - 是否推送
 - 风险与剩余问题

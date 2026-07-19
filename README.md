@@ -94,7 +94,7 @@ agent-context-os/
 2. 确认复制结果包含 `AGENTS.md`、`docs/agent/`、`scripts/`、`.gitattributes` 和 `.gitignore`。
 3. 替换模板中的 `<项目名>`、`<技术栈>`、`<模块名>` 和 `<验证命令>`。
 4. 按真实项目补齐 `docs/agent/modules/`、`docs/agent/memory.md` 和业务语义文档。
-5. 执行 `scripts/check-project-memory-store.ps1`；项目已使用 Git 时，再执行 `scripts/check-agent-drift.ps1`。
+5. 执行 `scripts/check-agent-strong.ps1`；如果项目尚未启用完整脚本，再分别执行 `scripts/check-project-memory-store.ps1`、`scripts/check-agent-worktrees.ps1` 和 `scripts/check-agent-drift.ps1`。
 6. 后续所有 Agent 任务从项目根目录的 `AGENTS.md` 和 `docs/agent/00-index.md` 开始。
 
 ## 快速接入：老项目

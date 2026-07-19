@@ -90,6 +90,7 @@ S2 和 S3 必须维护运行态任务文件。
 - `worktree_path`
 - `worktree_branch`
 - `worktree_cleanup`
+- `strong_check`
 - `git_commit`
 - `open_questions`
 
@@ -102,6 +103,7 @@ S2 和 S3 必须维护运行态任务文件。
 - 完整方案开发是否引用 `confirmed` 或 `active` 方案落实台账。
 - 多任务并行或 S2/S3 变更是否记录工作区模式。
 - 独立 Git worktree 是否登记路径、分支和清理状态。
+- 代码、脚本、模板或协作文档修改是否记录强检查状态。
 - 方案相关变更是否引用 `intake.md`。
 - 老项目接入变更是否更新 `adoption.md` 或 `legacy-docs.md`。
 - 业务规则、字段、状态、接口或权限变化是否更新对应文档。

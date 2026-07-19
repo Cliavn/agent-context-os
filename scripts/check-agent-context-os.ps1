@@ -141,6 +141,7 @@ $RequiredFiles = @(
     "templates/project/scripts/check-project-memory-store.ps1",
     "templates/project/scripts/check-agent-drift.ps1",
     "templates/project/scripts/check-agent-worktrees.ps1",
+    "templates/project/scripts/check-agent-strong.ps1",
     "templates/project/docs/agent/legacy-docs.md",
     "templates/project/docs/agent/02-architecture.md",
     "templates/project/docs/agent/03-tech-stack.md",
@@ -183,7 +184,8 @@ $RequiredFiles = @(
     "scripts/check-agent-context-os.ps1",
     "scripts/check-project-memory-store.ps1",
     "scripts/check-agent-drift.ps1",
-    "scripts/check-agent-worktrees.ps1"
+    "scripts/check-agent-worktrees.ps1",
+    "scripts/check-agent-strong.ps1"
 )
 
 foreach ($Directory in $RequiredDirectories) {
@@ -196,12 +198,14 @@ foreach ($File in $RequiredFiles) {
 
 Test-ContainsText "README.md" "Agent Context OS"
 Test-ContainsText "AGENTS.md" "Agent Context OS"
+Test-ContainsText "AGENTS.md" "check-agent-strong.ps1"
 Test-ContainsText ".gitattributes" "*.ps1 text eol=crlf"
 Test-ContainsText "docs/01-context-routing.md" "Token"
 Test-ContainsText "docs/02-business-modeling.md" "Agent"
 Test-ContainsText "docs/07-token-budget.md" "Agent"
 Test-ContainsText "docs/08-multi-agent-policy.md" "Agent"
 Test-ContainsText "docs/08-multi-agent-policy.md" "worktree"
+Test-ContainsText "docs/05-quality-gates.md" "check-agent-strong.ps1"
 Test-ContainsText "docs/09-project-memory.md" "assumption"
 Test-ContainsText "docs/10-progressive-adoption.md" "progressive"
 Test-ContainsText "docs/11-plan-intake.md" "proposed"
@@ -210,9 +214,12 @@ Test-ContainsText "docs/11-plan-intake.md" "draft_record"
 Test-ContainsText "docs/12-execution-gates.md" "S0"
 Test-ContainsText "docs/12-execution-gates.md" "git_commit"
 Test-ContainsText "docs/12-execution-gates.md" "workspace_mode"
+Test-ContainsText "docs/12-execution-gates.md" "strong_check"
 Test-ContainsText "docs/13-project-style-profile.md" "style-profile.md"
 Test-ContainsText 'docs/14-retrieval-memory-store.md' 'memory-store'
 Test-ContainsText 'docs/15-release-readiness-review.md' 'RR-001'
+Test-ContainsText 'docs/15-release-readiness-review.md' 'RR-012'
+Test-ContainsText 'docs/15-release-readiness-review.md' 'check-agent-strong.ps1'
 Test-ContainsText 'docs/16-plan-execution-ledger.md' 'confirmed'
 Test-ContainsText 'docs/16-plan-execution-ledger.md' 'plan-id'
 Test-ContainsText "templates/project/.gitattributes" "*.ps1 text eol=crlf"
@@ -227,6 +234,7 @@ Test-ContainsText "templates/project/AGENTS.md" "docs/agent/intake.md"
 Test-ContainsText "templates/project/AGENTS.md" "S0"
 Test-ContainsText "templates/project/AGENTS.md" "Git"
 Test-ContainsText "templates/project/AGENTS.md" "worktree_cleanup"
+Test-ContainsText "templates/project/AGENTS.md" "check-agent-strong.ps1"
 Test-ContainsText "templates/project/AGENTS.md" "discussion_only"
 Test-ContainsText "templates/project/AGENTS.md" "docs/agent/plans"
 Test-ContainsText "templates/project/docs/agent/00-index.md" "workflow"
@@ -252,6 +260,7 @@ Test-ContainsText "templates/project/docs/agent/runtime/current-task.md" "style_
 Test-ContainsText "templates/project/docs/agent/runtime/current-task.md" "plan_ledger"
 Test-ContainsText "templates/project/docs/agent/runtime/current-task.md" "workspace_mode"
 Test-ContainsText "templates/project/docs/agent/runtime/current-task.md" "worktree_cleanup"
+Test-ContainsText "templates/project/docs/agent/runtime/current-task.md" "strong_check"
 Test-ContainsText 'templates/project/docs/agent/runtime/current-task.md' 'git_commit'
 Test-ContainsText 'templates/project/docs/agent/runtime/current-task.md' 'pushed'
 Test-ContainsText "templates/project/docs/agent/workflows/progressive-adoption.md" "Agent Context Engine"
@@ -263,6 +272,7 @@ Test-ContainsText "templates/project/docs/agent/workflows/execution-gate.md" "di
 Test-ContainsText "templates/project/docs/agent/workflows/execution-gate.md" "confirmed"
 Test-ContainsText "templates/project/docs/agent/workflows/parallel-worktree.md" "worktree_cleanup"
 Test-ContainsText "templates/project/docs/agent/workflows/parallel-worktree.md" "git worktree remove"
+Test-ContainsText "templates/project/docs/agent/quality.md" "check-agent-strong.ps1"
 Test-ContainsText "templates/project/docs/agent/checklists/adoption-checklist.md" "legacy-docs.md"
 Test-ContainsText "templates/project/docs/agent/checklists/plan-intake-checklist.md" "conflict"
 Test-ContainsText "templates/project/docs/agent/checklists/plan-intake-checklist.md" "discussion_only"
@@ -277,25 +287,35 @@ Test-ContainsText "templates/reports/task-report.md" "docs/agent/memory.md"
 Test-ContainsText 'templates/reports/task-report.md' 'memory-store'
 Test-ContainsText "templates/reports/task-report.md" "Git"
 Test-ContainsText "templates/reports/task-report.md" "worktree"
+Test-ContainsText "templates/reports/task-report.md" "check-agent-strong.ps1"
 Test-ContainsText "templates/project/docs/agent/task-report-template.md" "pushed"
 Test-ContainsText "templates/project/docs/agent/task-report-template.md" "worktree"
+Test-ContainsText "templates/project/docs/agent/task-report-template.md" "check-agent-strong.ps1"
 Test-ContainsText "templates/reports/plan-intake-report.md" "proposed"
 Test-ContainsText "templates/reports/plan-intake-report.md" "T1"
 Test-ContainsText "scripts/check-agent-drift.ps1" "change_level:"
 Test-ContainsText "scripts/check-agent-drift.ps1" "plan_ledger:"
 Test-ContainsText "scripts/check-agent-drift.ps1" "workspace_mode:"
+Test-ContainsText "scripts/check-agent-drift.ps1" "strong_check:"
 Test-ContainsText 'scripts/check-project-memory-store.ps1' 'memory-schema.json'
 Test-ContainsText 'scripts/check-agent-worktrees.ps1' 'git worktree list'
+Test-ContainsText 'scripts/check-agent-strong.ps1' 'check-agent-worktrees.ps1'
+Test-ContainsText 'scripts/check-agent-strong.ps1' 'diff'
 Test-ContainsText "templates/project/scripts/check-agent-drift.ps1" "change_level:"
 Test-ContainsText "templates/project/scripts/check-agent-drift.ps1" "plan_ledger:"
 Test-ContainsText "templates/project/scripts/check-agent-drift.ps1" "workspace_mode:"
+Test-ContainsText "templates/project/scripts/check-agent-drift.ps1" "strong_check:"
 Test-ContainsText 'templates/project/scripts/check-project-memory-store.ps1' 'memory-schema.json'
 Test-ContainsText 'templates/project/scripts/check-agent-worktrees.ps1' 'git worktree list'
+Test-ContainsText 'templates/project/scripts/check-agent-strong.ps1' 'check-agent-worktrees.ps1'
+Test-ContainsText 'templates/project/scripts/check-agent-strong.ps1' 'diff'
 Test-FilesEqual "scripts/check-agent-drift.ps1" "templates/project/scripts/check-agent-drift.ps1"
 Test-FilesEqual "scripts/check-project-memory-store.ps1" "templates/project/scripts/check-project-memory-store.ps1"
 Test-FilesEqual "scripts/check-agent-worktrees.ps1" "templates/project/scripts/check-agent-worktrees.ps1"
+Test-FilesEqual "scripts/check-agent-strong.ps1" "templates/project/scripts/check-agent-strong.ps1"
 
 Invoke-CheckScript "scripts/check-project-memory-store.ps1" @("-StoreRoot", "templates/project/docs/agent/memory-store")
+Invoke-CheckScript "scripts/check-agent-worktrees.ps1"
 
 if ($Issues.Count -gt 0) {
     Write-Host 'Agent Context OS check failed:' -ForegroundColor Red
