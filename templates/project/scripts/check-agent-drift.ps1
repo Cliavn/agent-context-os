@@ -111,7 +111,7 @@ if (-not (Test-Path -LiteralPath $CurrentTask -PathType Leaf)) {
 else {
     $Content = Get-Content -LiteralPath $CurrentTask -Raw -Encoding UTF8
 
-    foreach ($Required in @("change_level:", "memory_writeback:", "style_profile:", "plan_ledger:", "verification:")) {
+    foreach ($Required in @("change_level:", "memory_writeback:", "style_profile:", "plan_ledger:", "workspace_mode:", "worktree_cleanup:", "verification:")) {
         if ($Content -notlike "*$Required*") {
             Add-Issue "current-task.md does not contain '$Required'"
         }

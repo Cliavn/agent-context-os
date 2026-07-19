@@ -38,6 +38,7 @@
 | 端侧风格 / 工程习惯调整 | `style-profile.md`、相关模块文档、必要的业务或架构文档 |
 | 数据库变更 | 存储模块文档、数据库 checklist、回滚方案 |
 | 发布 / 提交 | `workflows/version-control.md`、`checklists/version-control-checklist.md` |
+| 多任务并行开发准备 | `change-levels.md`、`workflows/parallel-worktree.md`、`checklists/parallel-worktree-checklist.md`、`workflows/version-control.md` |
 | 用户补充业务背景 | `memory-store/`、`memory.md`、相关业务文档、相关模块文档 |
 | 用户补充风格偏好 | `style-profile.md`、相关模块文档 |
 
@@ -57,4 +58,6 @@
 - 用户要求形成开发顺序、任务清单、记录草稿或准备落地时，创建或更新 `plans/<plan-id>.md`。
 - `draft` 台账不得作为实现依据；完整方案开发必须读取 `confirmed` 或 `active` 台账并逐项执行。
 - 历史文档只做回溯，不作为当前实现依据。
+- 多个 Codex 任务并行时，每个任务应使用独立 Git worktree（工作树）和独立 branch（分支）；S0/S1 单任务小改动可直接使用主工作区。
+- 临时 Git worktree 必须登记路径、分支和清理状态，任务完成、合并或废弃后必须清理。
 - 文档应短而可执行，优先写边界、流程、接口和验收标准。

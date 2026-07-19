@@ -40,6 +40,7 @@ Agent 应按以下顺序加载上下文：
 | 端侧风格或工程习惯调整 | 项目风格画像、相关模块卡片、必要的业务或架构文档 |
 | 数据库变更 | storage 模块卡片、migration 规则、回滚方案 |
 | 发布或提交 | version-control workflow、发布 checklist |
+| 多任务并行开发准备 | 变更分级、parallel-worktree workflow、parallel-worktree checklist、version-control workflow |
 
 ## 过期文档处理
 
@@ -72,6 +73,7 @@ Agent 应按以下顺序加载上下文：
 - 完整方案先读结构化摄取记录，不默认读取方案全文。
 - 完整方案落地先读 `docs/agent/plans/` 中的 `confirmed` 或 `active` 台账，不回读原始讨论全文。
 - S0 微小变更不默认读取 memory、memory-store、intake、legacy 和业务长文档。
+- S0 / S1 单任务小改动不默认创建 Git worktree（工作树）；只有多 Codex 任务并行、S2/S3、长期任务或共享文件冲突风险时才进入独立工作树流程。
 - 只有出现冲突、复杂 bug 或高风险变更时才深读。
 - 多 Agent 必须有明确触发条件和任务包。
 

@@ -13,8 +13,13 @@ out/
 .tmp/
 *.log
 
+# Local Git worktree staging areas
+.worktrees/
+.agent-worktrees/
+.codex-worktrees/
+worktrees/
+
 # Local environment
 .env
 .env.*
 !.env.example
-

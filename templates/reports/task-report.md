@@ -20,6 +20,14 @@
 - 原因：`<为什么是这个等级>`
 - 是否触发升级：`<否 / 升级原因>`
 
+## 工作区模式
+
+- 模式：`<主工作区 / Git worktree>`
+- 原因：`<为什么使用或不使用 Git worktree>`
+- worktree 路径：`<无 / 绝对路径>`
+- worktree 分支：`<无 / codex/task-id>`
+- 清理状态：`<not_required / pending / removed / pruned / blocked>`
+
 ## 验证结果
 
 | 验证 | 结果 | 说明 |
@@ -81,6 +89,7 @@
 
 - current-task：`<未使用 / 已更新 / 已归档>`
 - drift 检查：`<未运行 / 通过 / 失败 / 不适用>`
+- worktree 检查：`<未运行 / 通过 / 失败 / 不适用>`
 
 ## 风险与后续
 
