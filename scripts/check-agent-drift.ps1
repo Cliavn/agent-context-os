@@ -12,7 +12,22 @@ if (-not (Test-Path -LiteralPath $AgentDir -PathType Container)) {
     }
 
     if (Test-Path -LiteralPath $ThinConfig -PathType Leaf) {
-        Write-Host "Agent drift check passed: thin-launcher project uses project check instead of docs/agent drift."
+        $ProjectCheck = Join-Path $Root "scripts/check-agent.ps1"
+        if (-not (Test-Path -LiteralPath $ProjectCheck -PathType Leaf)) {
+            Write-Host "Agent drift check failed: thin-launcher project missing scripts/check-agent.ps1." -ForegroundColor Red
+            exit 1
+        }
+
+        $ProjectCheckOutput = & powershell -NoProfile -ExecutionPolicy Bypass -File $ProjectCheck -ProjectRoot $Root 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "Agent drift check failed: thin-launcher project check failed." -ForegroundColor Red
+            foreach ($Line in $ProjectCheckOutput) {
+                Write-Host " - $Line" -ForegroundColor Red
+            }
+            exit 1
+        }
+
+        Write-Host "Agent drift check skipped: thin-launcher project passed project check; runtime drift is enforced by current engine."
         exit 0
     }
 

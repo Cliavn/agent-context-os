@@ -105,7 +105,7 @@ $RequiredFiles = @(
     "templates/project/AGENTS.md",
     "templates/project/.agent-context/config.json",
     "templates/project/.agent-context/memory-sources/README.md",
-    "templates/project/.agent-context/memory-sources/_example.jsonl",
+    "templates/project/.agent-context/memory-sources/_example.jsonl.example",
     "templates/project/scripts/check-agent.ps1",
     "templates/business/module-overview.md",
     "templates/business/business-flow.md",
@@ -159,18 +159,24 @@ Test-ContainsText "templates/project/AGENTS.md" ".agent-context/config.json"
 Test-ContainsText "templates/project/AGENTS.md" "local-index"
 Test-ContainsText "templates/project/.agent-context/config.json" "thin-launcher"
 Test-ContainsText "templates/project/.agent-context/config.json" "source_paths"
+Test-ContainsText "templates/project/.agent-context/config.json" "memory-*.jsonl"
 Test-ContainsText "templates/project/.agent-context/config.json" "git_tracked"
 Test-ContainsText "templates/project/.agent-context/memory-sources/README.md" "JSONL"
-Test-ContainsText "templates/project/.agent-context/memory-sources/_example.jsonl" "mem-YYYYMMDD-001"
+Test-ContainsText "templates/project/.agent-context/memory-sources/README.md" "_example.jsonl.example"
+Test-ContainsText "templates/project/.agent-context/memory-sources/_example.jsonl.example" "mem-YYYYMMDD-001"
 Test-ContainsText "templates/project/scripts/check-agent.ps1" "local_index.git_tracked"
+Test-ContainsText "templates/project/scripts/check-agent.ps1" "SensitivePatterns"
+Test-ContainsText "templates/project/scripts/check-agent.ps1" "memory.source_paths did not match"
 Test-ContainsText "templates/business/field-rules.md" "field_name"
 Test-ContainsText "templates/reports/implementation-spec.md" "memory-sources"
 Test-ContainsText "templates/reports/task-report.md" "local-index"
 Test-ContainsText "templates/reports/plan-intake-report.md" "discussion_only"
 Test-ContainsText "scripts/check-agent-project.ps1" "check-agent.ps1"
 Test-ContainsText "scripts/check-agent-drift.ps1" "thin-launcher"
+Test-ContainsText "scripts/check-agent-drift.ps1" "runtime drift is enforced by current engine"
 Test-ContainsText "scripts/check-agent-worktrees.ps1" "git worktree list"
 Test-ContainsText "scripts/check-agent-strong.ps1" "check-agent-project.ps1"
+Test-ContainsText "scripts/check-agent-strong.ps1" "Invoke-ExpectedFailureScript"
 Test-ContainsText "scripts/check-agent-strong.ps1" "diff"
 
 $ProjectTemplateCheckArgs = @("-ProjectRoot", "templates/project", "-AllowPlaceholders")

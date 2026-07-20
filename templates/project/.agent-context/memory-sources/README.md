@@ -12,9 +12,15 @@
 ## 不存放内容
 
 - 本地向量库文件、索引文件、缓存文件。
-- 账号、密钥、token、cookie 或真实隐私数据。
+- 账号、密码、密钥、凭据、token、cookie 或真实隐私数据。
 - 未经确认的 Agent 推测。
 - 可从代码、测试或构建产物重新生成的大文件。
+
+## 文件命名
+
+- 正式记忆源使用 `memory-<主题>.jsonl`，例如 `memory-auth.jsonl`。
+- `_example.jsonl.example` 只作为格式参考，不会被默认 `source_paths` 纳入检索。
+- 不要把 `_example`、`draft` 或其他示例文件改成真实记忆源；需要记录事实时新建正式 `memory-*.jsonl`。
 
 ## JSONL 字段
 
@@ -45,3 +51,4 @@
 - 本地索引由记忆源生成，不进入 Git。
 - 同一事实只维护一条当前记录；过期记录标记为 `stale` 或 `deprecated`。
 - Agent 召回记忆后必须回到证据路径验证高风险内容。
+- 运行 `scripts/check-agent.ps1` 时，正式记忆源中的占位符和敏感标记会被拦截。

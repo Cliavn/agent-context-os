@@ -86,7 +86,8 @@ agent-context-os/
 │  ├─ config.json
 │  └─ memory-sources/
 │     ├─ README.md
-│     └─ *.jsonl
+│     ├─ _example.jsonl.example
+│     └─ memory-*.jsonl
 └─ scripts/
    └─ check-agent.ps1
 ```
@@ -97,7 +98,7 @@ agent-context-os/
 
 1. 复制 `templates/project/` 到项目根目录。
 2. 替换 `.agent-context/config.json` 中的 `<项目ID>`、`<项目名>`、`<引擎版本>`、`<本机引擎路径或包名>` 和 `<验证命令>`。
-3. 在 `.agent-context/memory-sources/` 中维护团队共享的项目记忆源。
+3. 在 `.agent-context/memory-sources/` 中用 `memory-*.jsonl` 维护团队共享的项目记忆源；`_example.jsonl.example` 只作格式参考。
 4. 确认 `.agent-context/local-index/`、`.agent-context/index/` 和缓存文件不进入 Git。
 5. 执行 `scripts/check-agent.ps1`。
 6. 后续 Agent 任务从 `AGENTS.md` 和 `.agent-context/config.json` 开始，再由当前引擎按任务动态加载规则。
@@ -107,7 +108,7 @@ agent-context-os/
 老项目升级默认走原地换芯：
 
 1. 识别旧协作引擎文件和其中混入的项目记忆。
-2. 将仍有效的业务背景、开发习惯、交互习惯和历史坑迁入 `.agent-context/memory-sources/`。
+2. 将仍有效的业务背景、开发习惯、交互习惯和历史坑迁入 `.agent-context/memory-sources/memory-*.jsonl`。
 3. 清退旧协作引擎文件，不长期保留两套协作结构。
 4. 写入新版极薄入口和 `.agent-context/config.json`。
 5. 重建本地检索索引。

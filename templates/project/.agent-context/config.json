@@ -10,7 +10,7 @@
   },
   "memory": {
     "source_paths": [
-      ".agent-context/memory-sources/*.jsonl"
+      ".agent-context/memory-sources/memory-*.jsonl"
     ],
     "local_index": {
       "provider": "<embedded-vector-index>",

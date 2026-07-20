@@ -54,7 +54,7 @@ scripts/check-agent-strong.ps1
 - `scripts/check-agent-context-os.ps1`：检查蓝图结构、必需文件、模板同步和核心引用。
 - `scripts/check-agent-project.ps1`：检查极薄项目入口、项目记忆源和本地索引排除规则。
 - `scripts/check-agent-worktrees.ps1`：检查 Git worktree（工作树）是否嵌套在仓库内、是否存在可清理残留。
-- `scripts/check-agent-drift.ps1`：检查代码类变更是否留下任务状态和文档同步痕迹。
+- `scripts/check-agent-drift.ps1`：检查旧 `docs/agent/` 项目的代码类变更是否留下任务状态和文档同步痕迹；薄入口项目由项目检查脚本和当前引擎运行态门禁负责。
 
 如果某个检查不适用于当前项目，最终报告必须说明跳过原因；如果检查失败，不得宣称交付完成，除非用户明确接受失败状态和剩余风险。
 
@@ -132,7 +132,7 @@ scripts/check-agent-strong.ps1
 
 - S0 微小变更可以走轻量模式，但必须说明不涉及业务规则、记忆源写回、方案摄取和旧引擎清退。
 - S2/S3 必须维护或更新任务状态、记忆源写回结论和本地索引状态。
-- 代码修改后应运行 drift 或项目检查，防止项目记忆源和真实实现偏移。
+- 代码修改后应运行 drift、项目检查或当前引擎提供的运行态门禁，防止项目记忆源和真实实现偏移。
 - 代码、脚本、模板或协作文档修改后应运行强检查矩阵；优先使用 `scripts/check-agent-strong.ps1`。
 - 代码或协作文档修改后，默认执行本地 Git 提交；提交前必须完成必要验证并只暂存本次相关文件。
 

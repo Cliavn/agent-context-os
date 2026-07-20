@@ -27,7 +27,8 @@
 │  ├─ config.json
 │  └─ memory-sources/
 │     ├─ README.md
-│     └─ *.jsonl
+│     ├─ _example.jsonl.example
+│     └─ memory-*.jsonl
 └─ scripts/
    └─ check-agent.ps1
 ```
@@ -48,11 +49,11 @@
 - 协作引擎的通用 workflow、checklist、任务拆解方式或门禁规则。
 - 本地向量库文件、缓存、临时索引或生成产物。
 - 可从代码、测试或构建流程重新生成的大文件。
-- 账号、密钥、token、cookie 或真实隐私数据。
+- 账号、密码、密钥、凭据、token、cookie 或真实隐私数据。
 
 ## 记忆源与索引
 
-项目记忆源是团队共享事实，应进入 Git（版本控制工具），因为它小、可审查、可合并、可追溯。
+项目记忆源是团队共享事实，应进入 Git（版本控制工具），因为它小、可审查、可合并、可追溯。正式记忆源默认命名为 `memory-*.jsonl`；示例文件只保留为 `_example.jsonl.example`，不得纳入 `source_paths`。
 
 本地检索索引是查询加速结构，不应进入 Git。它可以由项目记忆源、代码摘要和证据路径重新生成。
 
