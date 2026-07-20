@@ -15,15 +15,15 @@
 
 | 编号 | 问题 | 风险 | 状态 |
 |---|---|---|---|
-| RR-001 | `templates/project/` 未包含项目级检查脚本 | 用户复制模板后没有 memory-store 和 drift 检查，质量门禁可能落空 | 已修复：新增 `templates/project/scripts/` 并由根检查脚本校验与根脚本一致 |
+| RR-001 | `templates/project/` 未包含项目级检查脚本 | 用户复制模板后没有极薄入口和项目记忆源检查，质量门禁可能落空 | 已修复：新增 `templates/project/scripts/check-agent.ps1` 并由根检查脚本校验 |
 | RR-002 | README 新项目接入步骤指向根仓库检查脚本 | 下游项目按文档操作时可能找不到 `scripts/check-agent-context-os.ps1` | 已修复：改为运行项目模板内的检查脚本 |
 | RR-003 | README 仓库结构未列出 `docs/14-retrieval-memory-store.md` | 结构说明与实际仓库不一致，用户可能漏读检索式记忆规范 | 已修复 |
 | RR-004 | drift 检查未覆盖脚本、配置和常见构建文件 | `.ps1`、JSON、YAML、Dockerfile 等高风险改动可能绕过文档同步检查 | 已修复：扩展代码/配置路径识别范围 |
 | RR-005 | drift 检查在下游项目缺少 `docs/agent` 时会跳过 | 未正确接入模板的项目可能误以为检查通过 | 已修复：仅蓝图模板仓库允许跳过，下游项目缺失时失败 |
-| RR-006 | memory-store 只校验字段和枚举，未校验真实日期 | `2026-99-99` 等无效日期可能进入项目记忆 | 已修复：校验 `id` 日期、`source.date` 和 `last_verified` 为真实日历日期 |
-| RR-007 | `privacy_rules.forbidden_content` 未实际用于扫描记忆记录 | 账号、密钥、token、cookie 等敏感标记可能被写入 `memories.jsonl` | 已修复：按配置扫描 summary、content、source、scope、evidence 和 tags |
+| RR-006 | 旧 memory-store 检查和新极薄入口不匹配 | 强检查会要求用户项目保留旧协作文档结构 | 已修复：改为校验 `.agent-context/config.json`、项目记忆源和本地索引排除规则 |
+| RR-007 | 项目记忆源缺少敏感信息边界 | 账号、密钥、token、cookie 等敏感标记可能被写入记忆源 | 已修复：项目模板和检查脚本明确禁止敏感信息进入记忆源 |
 | RR-008 | 默认隐私标记只覆盖英文词 | 中文项目中“密码”“密钥”“凭据”等敏感词不易被拦截 | 已修复：补充中文敏感标记 |
-| RR-009 | 主检查未防止模板脚本和根脚本漂移 | 根脚本修复后，模板脚本可能遗留旧逻辑 | 已修复：根检查脚本校验模板脚本内容必须一致 |
+| RR-009 | 主检查未覆盖薄入口配置 | 模板结构变化后，旧检查可能仍要求 `docs/agent/` | 已修复：根检查脚本校验薄入口配置和项目级检查脚本 |
 | RR-010 | `templates/project/` 未包含 `.gitattributes` 和 `.gitignore` | 用户初始化 Git 后可能出现换行噪声，或误提交环境变量、日志和构建产物 | 已修复：模板项目包含基础 Git 文件并纳入根检查 |
 | RR-011 | drift 检查返回空 Git 改动集合时不稳定 | 干净项目可能误报失败，且没有清晰错误原因 | 已修复：显式返回字符串数组 |
 | RR-012 | 多个检查脚本分散，任务收尾时容易漏跑 worktree、drift 或空白检查 | 关键协作链路只靠 Agent 自觉，可能在改动后未进行完整强检查 | 已修复：新增 `scripts/check-agent-strong.ps1` 聚合强检查矩阵，并由模板和质量门禁引用 |
@@ -38,10 +38,10 @@
 
 - 优先运行 `scripts/check-agent-strong.ps1`。
 - 必要时单独运行 `scripts/check-agent-context-os.ps1`。
-- 必要时单独运行 `scripts/check-project-memory-store.ps1`。
+- 必要时单独运行 `scripts/check-agent-project.ps1 -ProjectRoot templates/project -AllowPlaceholders`。
 - 必要时单独运行 `scripts/check-agent-worktrees.ps1`。
 - 必要时单独运行 `scripts/check-agent-drift.ps1`。
-- 对 memory-store、retrieval-config、schema、drift 进行负向验证。
+- 对极薄入口配置、项目记忆源、本地索引排除规则和 drift 进行负向验证。
 - 扫描敏感信息和危险命令。
 - 检查 `.ps1` 换行符合 `.gitattributes`。
 - 确认 Git 工作区干净。

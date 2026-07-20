@@ -2,15 +2,21 @@ $ErrorActionPreference = "Stop"
 
 $Root = Split-Path -Parent $PSScriptRoot
 $AgentDir = Join-Path $Root "docs/agent"
-$TemplateAgentDir = Join-Path $Root "templates/project/docs/agent"
+$ThinConfig = Join-Path $Root ".agent-context/config.json"
+$TemplateThinConfig = Join-Path $Root "templates/project/.agent-context/config.json"
 
 if (-not (Test-Path -LiteralPath $AgentDir -PathType Container)) {
-    if (Test-Path -LiteralPath $TemplateAgentDir -PathType Container) {
-        Write-Host "Agent drift check skipped: blueprint template repository."
+    if (Test-Path -LiteralPath $TemplateThinConfig -PathType Leaf) {
+        Write-Host "Agent drift check skipped: thin-launcher blueprint template repository."
         exit 0
     }
 
-    Write-Host "Agent drift check failed: docs/agent not found." -ForegroundColor Red
+    if (Test-Path -LiteralPath $ThinConfig -PathType Leaf) {
+        Write-Host "Agent drift check passed: thin-launcher project uses project check instead of docs/agent drift."
+        exit 0
+    }
+
+    Write-Host "Agent drift check failed: neither docs/agent nor .agent-context/config.json found." -ForegroundColor Red
     exit 1
 }
 
@@ -63,6 +69,10 @@ function Test-IsCodePath {
         return $false
     }
 
+    if ($Path -like ".agent-context/memory-sources/*") {
+        return $false
+    }
+
     $Ext = [System.IO.Path]::GetExtension($Path).ToLowerInvariant()
     $Name = [System.IO.Path]::GetFileName($Path)
     $CodeExts = @(
@@ -106,7 +116,7 @@ if (-not $CodeChanged) {
 }
 
 if (-not (Test-Path -LiteralPath $CurrentTask -PathType Leaf)) {
-    Add-Issue "Missing docs/agent/runtime/current-task.md for code-like changes."
+    Add-Issue "Missing runtime task record for code-like changes."
 }
 else {
     $Content = Get-Content -LiteralPath $CurrentTask -Raw -Encoding UTF8

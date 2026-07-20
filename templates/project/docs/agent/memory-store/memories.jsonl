@@ -1,1 +1,0 @@
-{"id":"mem-20260101-001","status":"draft","type":"business_rule","scope":["<模块名>","<业务流程>"],"summary":"<一句话记忆摘要>","content":"<可执行的完整记忆内容>","source":{"kind":"user_confirmed","ref":"<来源路径或任务报告>","date":"2026-01-01"},"evidence":["<代码路径或测试路径>"],"confidence":"medium","last_verified":"2026-01-01","tags":["<标签>"]}

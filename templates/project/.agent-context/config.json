@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "project_id": "<项目ID>",
+  "project_name": "<项目名>",
+  "engine": {
+    "name": "Agent Context OS",
+    "mode": "thin-launcher",
+    "version": "<引擎版本>",
+    "source": "<本机引擎路径或包名>"
+  },
+  "memory": {
+    "source_paths": [
+      ".agent-context/memory-sources/*.jsonl"
+    ],
+    "local_index": {
+      "provider": "<embedded-vector-index>",
+      "path": "<本机自动生成路径>",
+      "git_tracked": false
+    }
+  },
+  "quality": {
+    "check_command": "scripts/check-agent.ps1",
+    "validation_commands": [
+      "<验证命令>"
+    ]
+  }
+}

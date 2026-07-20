@@ -71,7 +71,7 @@ try {
     Invoke-GitCheck "Staged whitespace check" @("diff", "--cached", "--check", "--")
 
     Invoke-CheckScript "scripts/check-agent-context-os.ps1"
-    Invoke-CheckScript "scripts/check-project-memory-store.ps1"
+    Invoke-CheckScript "scripts/check-agent-project.ps1" @("-ProjectRoot", "templates/project", "-AllowPlaceholders")
     Invoke-CheckScript "scripts/check-agent-worktrees.ps1"
     Invoke-CheckScript "scripts/check-agent-drift.ps1"
 }
